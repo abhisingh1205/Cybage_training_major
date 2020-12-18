@@ -1,0 +1,730 @@
+# Regex entries
+
+## 1. About
+
+A Django app that let's users store handy regular expressions to lookup against at a later time.
+
+For example - 
+* [0-9] - Would match any number between `0` to `9`
+* [a-z] - Would match any lower cases alphabet
+* [A-Z] - Would match any lower cases alphabet
+
+See https://docs.python.org/3/howto/regex.html#matching-characters for more details.
+
+## 2. Quickstart Django - Setting Things Up
+
+### 2.1 Create project directory
+
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/1.skeleton$>mkdir project-regex
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/1.skeleton>cd project-regex
+```
+
+### 2.2 Pick a version
+
+* Pick an LTS version - https://www.djangoproject.com/download/
+* Add into `requirements.txt` - https://pip.pypa.io/en/stable/user_guide/#requirements-files
+* And install packages - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/1.skeleton/project-regex$ pip install -r requirements.txt
+Requirement already satisfied: django==2.2.17 in /home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages (from -r requirements.txt (line 1)) (2.2.17)
+Requirement already satisfied: sqlparse>=0.2.2 in /home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages (from django==2.2.17->-r requirements.txt (line 1)) (0.4.1)
+Requirement already satisfied: pytz in /home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages (from django==2.2.17->-r requirements.txt (line 1)) (2020.4)
+```
+
+### 2.3 Create Django project
+
+* Run command - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/1.skeleton/project-regex$ django-admin startproject regex
+```
+* Folder structure looks something like - 
+```
+- project-regex
+    - regex
+        - db.sqlite3
+        - regex
+            - settings.py
+            - urls.py
+            - wsgi.py
+        - manage.py
+```
+
+### 2.4 Run server
+
+* Run server to confirm installation works -
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/1.skeleton/project-regex/regex$ python manage.py runserver
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 17 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run 'python manage.py migrate' to apply them.
+
+November 19, 2020 - 03:57:03
+Django version 2.2.17, using settings 'regex.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+```
+* Confirm obligatory welcome page is visible on Chrome - http://localhost:8000/
+
+### 2.5 Create Django app
+
+* Run command - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/2.add_app/project-regex/regex$ python manage.py startapp entries
+```
+* Folder structure looks something like - 
+```
+- project-regex
+    - regex
+        - db.sqlite3
+        - entries
+            - migrations
+                - (empty)
+            - admin.py
+            - apps.py
+            - models.py
+            - tests.py
+            - views.py
+        - regex
+            - settings.py
+            - urls.py
+            - wsgi.py
+        - manage.py
+```
+
+## 3. Quickstart Django - Models
+
+### 3.1 Deal with unapplied core Django app migrations first
+
+* Note that there are unapplied migrations - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/3.add_model/project-regex/regex$ python manage.py runserver
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 17 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run 'python manage.py migrate' to apply them.
+
+November 19, 2020 - 03:06:05
+Django version 2.2.17, using settings 'regex.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+```
+* Run the migrations - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/3.add_model/project-regex/regex$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying sessions.0001_initial... OK
+```
+* Note that unapplied migrations no longer shows up - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/3.add_model/project-regex/regex$ python manage.py runserver
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+November 19, 2020 - 03:06:59
+Django version 2.2.17, using settings 'regex.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+```
+
+### 3.2 Deal with custom app migrations next
+
+* Add the relevant changes into `models.py`
+* Try generating the corresponding migrations file, but note that it thinks there is no change - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/3.add_model/project-regex/regex$ python manage.py makemigrations
+No changes detected
+```
+* Inform Django that a new app is now available, to detect migrations, in `settings.py`
+* Try generating the corresponding migrations file again - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/3.add_model/project-regex/regex$ python manage.py makemigrations
+Migrations for 'entries':
+  entries/migrations/0001_initial.py
+    - Create model Entry
+```
+* For the curious, to see what SQL is used, not necessary to run explicitly - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/3.add_model/project-regex/regex$ python manage.py sqlmigrate entries 0001
+BEGIN;
+--
+-- Create model Entry
+--
+CREATE TABLE "entries_entry" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "date_added" datetime NOT NULL, "pattern" varchar(255) NOT NULL, "test_string" varchar(255) NOT NULL, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "entries_entry_user_id_8eee90b6" ON "entries_entry" ("user_id");
+COMMIT;
+```
+* Lastly, apply the migrations - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/1.models/3.add_model/project-regex/regex$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, entries, sessions
+Running migrations:
+  Applying entries.0001_initial... OK
+```
+
+## 4. Quickstart Django - Admin
+
+### 4.1 Create superuser
+
+* Run command - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/2.admin/1.log_in_on_admin/project-regex/regex$ python manage.py createsuperuser
+Username (leave blank to use 'karand'): 
+Email address: 
+Password: 
+Password (again): 
+Superuser created successfully.
+```
+* Confirm logging in on admin page is now possible using above creds - http://localhost:8000/admin
+
+### 4.2 Fiddle with out-of-box controls/interactions
+
+* Create a few users - about 1-2
+* Create a few entries - about 2-3
+* Notice the following -
+    * http://localhost:8000/admin/ - "Entrys" instead of "Entries" :)
+    * http://localhost:8000/admin/entries/entry/ - Tabular view not ... useful/descriptive - 
+        * Items listed as "Entry object (3)"
+        * No columns
+        * No filters
+        * No search
+
+### 4.3 Polish up controls/interactions
+
+* Address points listed above
+* More controls listed all here - https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
+
+## 5. Quickstart Django - Querysets
+
+* Now that data is available let's try to query it, by using `shell_plus`.
+
+### 5.1 Install Django Extensions
+
+* Pick a version - https://pypi.org/project/django-extensions/
+* Add into `requirements.txt` - https://pip.pypa.io/en/stable/user_guide/#requirements-files
+* And install packages - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/2.admin/4.querysets/project-regex$ pip install -r requirements.txt
+Requirement already satisfied: django==2.2.17 in /home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages (from -r requirements.txt (line 1)) (2.2.17)
+Collecting django-extensions==3.0.9
+  Downloading django_extensions-3.0.9-py3-none-any.whl (221 kB)
+     |████████████████████████████████| 221 kB 1.1 MB/s 
+Requirement already satisfied: pytz in /home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages (from django==2.2.17->-r requirements.txt (line 1)) (2020.4)
+Requirement already satisfied: sqlparse>=0.2.2 in /home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages (from django==2.2.17->-r requirements.txt (line 1)) (0.4.1)
+Installing collected packages: django-extensions
+Successfully installed django-extensions-3.0.9
+```
+* Inform Django that a new app is now available, to run additional management commands, in `settings.py`
+
+### 5.2 Check Django version
+
+* Run these - 
+
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/2.admin/4.querysets/project-regex/regex$ python manage.py shell_plus
+# Shell Plus Model Imports
+from django.contrib.admin.models import LogEntry
+from django.contrib.auth.models import Group, Permission, User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.sessions.models import Session
+from entries.models import Entry
+# Shell Plus Django Imports
+from django.core.cache import cache
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.db import transaction
+from django.db.models import Avg, Case, Count, F, Max, Min, Prefetch, Q, Sum, When
+from django.utils import timezone
+from django.urls import reverse
+from django.db.models import Exists, OuterRef, Subquery
+Python 3.6.9 (default, Oct  8 2020, 12:12:24) 
+[GCC 8.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> 
+>>> import django
+>>> print(django.get_version())
+2.2.17
+```
+* `shell_plus` is convenient compared to default `shell` - Note how models/hooks are auto-imported above.
+
+### 5.3 Querysets
+
+* The ORM is a beautiful thing - abstracts away which DB is used
+* In this case, `SQLite` is being used, typically in "real"/"prod" environments a traditional DB (`Postgres`/`MySQL` etc.) is used.
+
+```
+# Reading all available rows
+>>> Entry.objects.all()
+<QuerySet [<Entry: Entry object (1)>, <Entry: Entry object (2)>, <Entry: Entry object (3)>]>
+
+# Reading the first row
+>>> Entry.objects.all()[0]
+<Entry: Entry object (1)>
+
+# Reading columns on the first row
+>>> Entry.objects.all()[0].id
+1
+>>> Entry.objects.all()[0].test_string
+'9'
+
+# Reading rows based on a filter on a column
+# Note - that this is *always* a Queryset ... a collection. To be used when uncertain of rows returned.
+>>> Entry.objects.filter(pattern='[A-Z]')
+<QuerySet [<Entry: Entry object (3)>]>
+>>> Entry.objects.filter(pattern='[A-Z]')[0].id
+3
+>>> Entry.objects.filter(pattern='random')
+<QuerySet []>
+>>> Entry.objects.filter(pattern='random').exists()
+False
+>>> Entry.objects.filter(pattern='[A-Z]').exists()
+True
+
+# Reading a single row based columns that uniquely identify a row
+# Note - that this is *always* a single ORM object, and complains if not found. To be used sure of row returned.
+>>> Entry.objects.get(id=3)
+<Entry: Entry object (3)>
+>>> Entry.objects.get(id=3).id
+3
+>>> Entry.objects.get(id=10000)
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+  File "/home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages/django/db/models/query.py", line 408, in get
+    self.model._meta.object_name
+entries.models.Entry.DoesNotExist: Entry matching query does not exist.
+
+# Reading rows based on a filter on a column, with field lookups
+>>> Entry.objects.filter(pattern__startswith='[')
+<QuerySet [<Entry: Entry object (1)>, <Entry: Entry object (2)>, <Entry: Entry object (3)>]>
+>>> Entry.objects.filter(pattern__startswith='[').count()
+3
+>>> Entry.objects.filter(pattern__contains='beast')
+<QuerySet []>
+
+# Inserting rows 
+>>> entry = Entry(pattern='[a-z][a-z][a-z]',test_string='ace',user=User.objects.get(username='karand'))
+>>> entry.save()
+>>> Entry.objects.all()
+<QuerySet [<Entry: Entry object (1)>, <Entry: Entry object (2)>, <Entry: Entry object (3)>, <Entry: Entry object (4)>]>
+
+# Updating rows 
+>>> entry = Entry.objects.get(id=4)
+>>> entry.test_string
+'ace'
+>>> entry.test_string = 'hut'
+>>> entry.save()
+>>> entry.test_string
+'hut'
+
+# Deleting rows 
+>>> entry = Entry.objects.get(id=4)
+>>> Entry.objects.all()
+<QuerySet [<Entry: Entry object (1)>, <Entry: Entry object (2)>, <Entry: Entry object (3)>, <Entry: Entry object (4)>]>
+>>> entry.delete()
+(1, {'entries.Entry': 1})
+>>> Entry.objects.all()
+<QuerySet [<Entry: Entry object (1)>, <Entry: Entry object (2)>, <Entry: Entry object (3)>]>
+```
+* More query hooks listed here - https://docs.djangoproject.com/en/2.2/ref/models/querysets/
+
+## 6. Quickstart Django - Relations
+
+### 6.1 - O2O
+
+* Need - To 'extend' another model in some way. For example, do not want to mess with core Django User model. So additional details can be captured in a separate UserProfile model.
+
+```
+# Reading relation
+>>> UserProfile.objects.get(id=1)
+<UserProfile: UserProfile object (1)>
+>>> UserProfile.objects.get(id=1).user
+<User: karand>
+>>> UserProfile.objects.get(id=1).user.username
+'karand'
+
+# Reading reverse relation
+>>> User.objects.get(id=1)
+<User: karand>
+>>> User.objects.get(id=1).userprofile
+<UserProfile: UserProfile object (1)>
+>>> User.objects.get(id=1).userprofile.nickname
+'KD'
+```
+
+* Details - 
+    * https://docs.djangoproject.com/en/2.2/ref/models/fields/#onetoonefield
+    * https://docs.djangoproject.com/en/2.2/topics/db/examples/one_to_one/
+
+### 6.2 - M2M
+
+* Need - To map multiple rows against two models. For example, techncially the same test strings can actually be mapped against multiple patterns, and vice versa.
+* This managed by an intermediary table.
+* Note that the default multiselect control in admin is a little awkward ... especially if that list increases.
+
+### 6.3 - M2M (better in admin)
+
+* Let's use an autcomplete instead.
+
+```
+# Reading relation
+>>> Entry.objects.get(id=1)
+<Entry: 1>
+>>> Entry.objects.get(id=1).test_strings
+<django.db.models.fields.related_descriptors.create_forward_many_to_many_manager.<locals>.ManyRelatedManager object at 0x7f6c28d135c0>
+>>> Entry.objects.get(id=1).test_strings.all()
+<QuerySet [<TestString: 0>]>
+>>> Entry.objects.get(id=1).test_strings.all()[0].string
+'0'
+
+# Reading reverse relation
+>>> TestString.objects.get(id=1)
+<TestString: J>
+>>> TestString.objects.get(id=1).entry_set
+<django.db.models.fields.related_descriptors.create_forward_many_to_many_manager.<locals>.ManyRelatedManager object at 0x7f6c293ded68>
+>>> TestString.objects.get(id=1).entry_set.all()
+<QuerySet [<Entry: 3>]>
+>>> TestString.objects.get(id=1).entry_set.all()[0].pattern
+'[A-Z]'
+```
+
+* Details - 
+    * https://docs.djangoproject.com/en/2.2/ref/models/fields/#manytomanyfield
+    * https://docs.djangoproject.com/en/2.2/topics/db/examples/many_to_many/
+    * https://docs.djangoproject.com/en/2.2/ref/contrib/admin/#django.contrib.admin.ModelAdmin.autocomplete_fields
+
+### 6.4 - O2M
+
+* Need - To map multiple rows of one model against another, but not vice versa. For example, multiple entries are created (and belong) to a user, but they should not be controlled/mapped against another user.
+* And for similar reasons let's use autocomplete fields here as well.
+
+```
+# Reading relation
+>>> Entry.objects.get(id=1)
+<Entry: 1>
+>>> Entry.objects.get(id=1).user
+<User: karand>
+
+# Reading reverse relation
+>>> User.objects.get(id=1)
+<User: karand>
+>>> User.objects.get(id=1).entry_set
+<django.db.models.fields.related_descriptors.create_reverse_many_to_one_manager.<locals>.RelatedManager object at 0x7f177f0f0048>
+>>> User.objects.get(id=1).entry_set.all()
+<QuerySet [<Entry: 1>]>
+>>> User.objects.get(id=1).entry_set.all()[0].pattern
+'[0-9]'
+```
+
+* Details - 
+    * https://docs.djangoproject.com/en/2.2/topics/db/examples/many_to_one/
+    * https://docs.djangoproject.com/en/2.2/ref/models/fields/#foreignkey
+
+## 7. Quickstart Django - Views
+
+### 7.1 Routing
+
+* Let's hook up some custom views, starting with a skeleton like 'Hello World'
+* Routing in Django land is managed through `urls.py`
+    * Specify one under `regex.urls`
+    * And another under `entries.urls`
+    * Note splitting up helps avoid lumping everything in a single file
+* Note that this should now load - http://localhost:8000/entries/home/
+
+* Details - https://docs.djangoproject.com/en/2.2/topics/http/urls/
+
+### 7.2 Authenticating
+
+* But ... anyone can access these views
+* Let's limit this to authenticated users
+* Note that hitting http://localhost:8000/entries/home/ > redirects to http://localhost:8000/admin/login/?next=/entries/home/ > and sends back to url based on query param `next`
+* Mixins are super useful options to reuse code without necessarily inheriting everything in the world - composition vs inheritance 
+
+* Details - https://docs.djangoproject.com/en/2.2/topics/auth/default/#the-loginrequired-mixin
+
+### 7.3 Templates
+
+* Let's flesh out the templates - add some html/css
+* Add reuseable templates
+* Add links
+* Note that http://localhost:8000/entries/home/ has a set of links, and that the HTML page is styled
+
+* Details - 
+    * https://docs.djangoproject.com/en/2.2/topics/templates/
+    * https://docs.djangoproject.com/en/2.2/ref/templates/builtins/
+
+### 7.4 Views
+
+* First off there's the display views - 
+    * `ListView` - Let's list out all entries - http://localhost:8000/entries/list/
+    * `DetailView` - And then an entry's detail (linked from list) - http://localhost:8000/entries/1/detail/
+* And then there's the editing views -
+    * `FormView` - And lastly an entry's form that can be updated (linked from detail) - http://localhost:8000/entries/3/form/
+
+* Details -
+    * https://docs.djangoproject.com/en/2.2/topics/class-based-views/
+    * https://docs.djangoproject.com/en/2.2/ref/class-based-views/generic-display/#listview
+    * https://docs.djangoproject.com/en/2.2/ref/class-based-views/generic-display/#detailview
+    * https://docs.djangoproject.com/en/2.2/topics/class-based-views/generic-editing/
+    * https://docs.djangoproject.com/en/2.2/topics/forms/#using-a-form-in-a-view
+    * https://docs.djangoproject.com/en/2.2/ref/class-based-views/generic-editing/#django.views.generic.edit.FormView
+    * https://docs.djangoproject.com/en/2.2/ref/class-based-views/generic-editing/#createview
+    * https://docs.djangoproject.com/en/2.2/ref/class-based-views/generic-editing/#updateview
+    * https://docs.djangoproject.com/en/2.2/ref/class-based-views/generic-editing/#deleteview
+
+
+## 8. Quickstart Django - API
+
+### 8.1 Setting Things Up
+
+* Pick a version 
+    * https://pypi.org/project/djangorestframework/
+    * https://www.django-rest-framework.org/community/release-notes/#312x-series
+    * https://www.django-rest-framework.org/#requirements
+* Add into `requirements.txt`
+* And install packages - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/4.api/1.skeleton/project-regex$ pip install -r requirements.txt
+Requirement already satisfied: django==2.2.17 in /home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages (from -r requirements.txt (line 1)) (2.2.17)
+Requirement already satisfied: django-extensions==3.0.9 in /home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages (from -r requirements.txt (line 2)) (3.0.9)
+Collecting djangorestframework==3.12.2
+  Downloading djangorestframework-3.12.2-py3-none-any.whl (957 kB)
+     |████████████████████████████████| 957 kB 1.4 MB/s 
+Requirement already satisfied: pytz in /home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages (from django==2.2.17->-r requirements.txt (line 1)) (2020.4)
+Requirement already satisfied: sqlparse>=0.2.2 in /home/karand/workspace/training.python/.tpvenv/lib/python3.6/site-packages (from django==2.2.17->-r requirements.txt (line 1)) (0.4.1)
+Installing collected packages: djangorestframework
+Successfully installed djangorestframework-3.12.2
+```
+* Create an app - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/4.api/1.skeleton/project-regex/regex$ python manage.py startapp api
+```
+* Hook in barebones urls / serializers / viewsets
+* And check -
+    * Remember to terminate session first - http://localhost:8000/admin/logout/
+    * And Browesable API (https://www.django-rest-framework.org/topics/browsable-api/) should load - http://localhost:8000/api/entries/
+
+### 8.2 Add in auth
+
+* Hook in `permissions_classes`
+* Remember to terminate session first - http://localhost:8000/admin/logout/
+* Note http://localhost:8000/api/entries/ complains with `Authentication credentials were not provided.`
+* Login http://localhost:8000/admin/ and try http://localhost:8000/api/entries/ again
+* But ... no one relally uses sessions with APIs, its all REST Clients
+
+### 8.2 Add in auth, but with token
+
+* First add in https://marketplace.visualstudio.com/items?itemName=humao.rest-client&ssr=false#overview
+* Note `sample.http`
+* Hook in auth app
+* Run relevant migrations - 
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/7.django/4.api/3.auth-with-token/project-regex/regex$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, authtoken, contenttypes, entries, sessions
+Running migrations:
+  Applying authtoken.0001_initial... OK
+  Applying authtoken.0002_auto_20160226_1747... OK
+  Applying authtoken.0003_tokenproxy... OK
+```
+* Create a token for your user - http://localhost:8000/admin/authtoken/tokenproxy/
+* And check using `Authorization` header
+* Details - https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
+
+
+### 8.3 Deal with relations
+* https://www.django-rest-framework.org/api-guide/relations/#serializer-relations
+
+### 8.4 Control what operations are supported
+* https://www.django-rest-framework.org/api-guide/viewsets/#modelviewset
+
+
+## 9. Quickstart Django - And React
+
+References - 
+* https://www.valentinog.com/blog/drf/
+* https://www.valentinog.com/blog/webpack-django/
+* https://github.com/owais/django-webpack-loader
+* https://github.com/owais/webpack-bundle-tracker
+* https://owais.lone.pw/blog/webpack-plus-reactjs-and-django/
+* https://github.com/shonin/django-manifest-loader
+
+### 9.1 Update VS Code settings for other file tyes
+
+* Update `settings.json` to consider formatting of .js/.css/.html files
+
+### 9.2 Add in a frontend app for hooking a React-based web app 
+
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex$ python manage.py startapp frontend
+
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex$ cd frontend/
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ mkdir src
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ cd src/
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend/src$ mkdir components
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend/src$ 
+
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ mkdir static
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ cd static/
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend/static$ mkdir frontend
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend/static$ cd ..
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ mkdir templates
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ cd templates/
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend/templates$ mkdir frontend
+```
+
+### 9.3 Add in webpack/babel for bundling 
+
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ node -v && npm -v
+v10.22.1
+6.14.6
+
+
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ npm init -y
+Wrote to /home/karand/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend/package.json:
+
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+
+
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ npm i webpack webpack-cli --save-dev
+
+npm notice created a lockfile as package-lock.json. You should commit this file.
+npm WARN frontend@1.0.0 No description
+npm WARN frontend@1.0.0 No repository field.
+
++ webpack-cli@4.2.0
++ webpack@5.11.0
+added 141 packages from 155 contributors and audited 141 packages in 18.982s
+
+17 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+
+
+   ╭────────────────────────────────────────────────────────────────╮
+   │                                                                │
+   │      New patch version of npm available! 6.14.6 -> 6.14.9      │
+   │   Changelog: https://github.com/npm/cli/releases/tag/v6.14.9   │
+   │               Run npm install -g npm to update!                │
+   │                                                                │
+   ╰────────────────────────────────────────────────────────────────╯
+```
+
+* Update `package.json` with script commands and `webpack.config.js` on files to target
+
+```
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ npm i @babel/core babel-loader @babel/preset-env @babel/preset-react --save-dev
+npm WARN frontend@1.0.0 No description
+npm WARN frontend@1.0.0 No repository field.
+
++ babel-loader@8.2.2
++ @babel/preset-react@7.12.10
++ @babel/preset-env@7.12.11
++ @babel/core@7.12.10
+added 152 packages from 72 contributors and audited 293 packages in 14.836s
+
+26 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ npm i react react-dom --save-dev
+
+npm WARN frontend@1.0.0 No description
+npm WARN frontend@1.0.0 No repository field.
+
++ react@17.0.1
++ react-dom@17.0.1
+added 5 packages from 2 contributors and audited 298 packages in 4.813s
+
+26 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+```
+* Update `.babelrc`
+
+### 9.4 Hook in skeleton files 
+
+* Add in view / url / html / app
+* Add in component
+
+### 9.5 Load skeleton app 
+
+```
+karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend$ npm run dev
+
+> frontend@1.0.0 dev /home/karand/workspace/training.python/8.django-react/1.skeleton/project-regex/regex/frontend
+> webpack --mode development ./src/index.js --output-path ./static/frontend/main.js
+
+[webpack-cli] Compilation finished
+asset main.js 1020 KiB [emitted] (name: main)
+runtime modules 668 bytes 3 modules
+modules by path ./node_modules/ 979 KiB
+  modules by path ./node_modules/scheduler/ 31.8 KiB
+    modules by path ./node_modules/scheduler/*.js 412 bytes 2 modules
+    modules by path ./node_modules/scheduler/cjs/*.js 31.4 KiB 2 modules
+  modules by path ./node_modules/react/ 70.6 KiB
+    ./node_modules/react/index.js 190 bytes [built] [code generated]
+    ./node_modules/react/cjs/react.development.js 70.5 KiB [built] [code generated]
+  modules by path ./node_modules/react-dom/ 875 KiB
+    ./node_modules/react-dom/index.js 1.33 KiB [built] [code generated]
+    ./node_modules/react-dom/cjs/react-dom.development.js 874 KiB [built] [code generated]
+  ./node_modules/object-assign/index.js 2.06 KiB [built] [code generated]
+modules by path ./src/ 3.5 KiB
+  ./src/index.js 35 bytes [built] [code generated]
+  ./src/components/App.js 3.47 KiB [built] [code generated]
+webpack 5.11.0 compiled successfully in 936 ms
+
+(.tpvenv) karand@Karand-Laptop:~/workspace/training.python/8.django-react/1.skeleton/project-regex/regex$ python manage.py runserver
+```
+
+* Hit http://localhost:8000/app > and see `Hello, World!`
+
+### 9.6 Use API
+
+* Hook in fetch / state change
+* Hit http://localhost:8000/app > and see `entries`

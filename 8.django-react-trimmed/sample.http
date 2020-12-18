@@ -1,0 +1,31 @@
+GET http://localhost:8000/api/entries/
+
+###
+
+GET http://localhost:8000/api/entries/ 
+Authorization: Token 8a8aecc57cea384caf0826c3a0ff38824e87f6fe
+
+###
+
+GET http://localhost:8000/api/entries/3
+Authorization: Token 8a8aecc57cea384caf0826c3a0ff38824e87f6fe
+
+###
+
+PATCH http://localhost:8000/api/entries/3/
+Authorization: Token 8a8aecc57cea384caf0826c3a0ff38824e87f6fe
+content-type: application/json
+
+{
+    "pattern": "[A-Z"
+}
+
+###
+
+PUT http://localhost:8000/api/entries/3/
+Authorization: Token 8a8aecc57cea384caf0826c3a0ff38824e87f6fe
+content-type: application/json
+
+{
+    "pattern": "[A-Z"
+}
